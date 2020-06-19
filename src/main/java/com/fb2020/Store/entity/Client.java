@@ -16,6 +16,9 @@ public class Client {
     private String email;
     @Column(name = "phone")
     private String phone;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "address_id")
+    private Address address;
 
     public Client() {
     }
@@ -58,5 +61,13 @@ public class Client {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public Address getAddress() {
+        return address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
     }
 }
