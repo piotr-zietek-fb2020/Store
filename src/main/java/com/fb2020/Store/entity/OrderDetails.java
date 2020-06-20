@@ -1,5 +1,7 @@
 package com.fb2020.Store.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 
 @Entity
@@ -13,6 +15,7 @@ public class OrderDetails {
     @OneToOne
     @JoinColumn(name = "product_id")
     private Product product;
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "order_id")
     private Order order;
@@ -46,5 +49,9 @@ public class OrderDetails {
 
     public void setOrder(Order order) {
         this.order = order;
+    }
+
+    public Order getOrder() {
+        return order;
     }
 }
