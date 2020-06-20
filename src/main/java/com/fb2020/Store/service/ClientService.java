@@ -11,6 +11,8 @@ import com.fb2020.Store.exception.orderDetails.OrderDetailsNotFoundException;
 import com.fb2020.Store.exception.orderDetails.OrderDetailsNotOwnedByOrderException;
 import com.fb2020.Store.exception.product.ProductException;
 import com.fb2020.Store.exception.product.ProductNotFoundException;
+import com.fb2020.Store.manager.InvoiceManager;
+import com.fb2020.Store.manager.Manager;
 import com.fb2020.Store.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,15 +26,18 @@ import java.util.Optional;
 @Service
 public class ClientService {
     @Autowired
-    ClientRepository clientRepository;
+    private ClientRepository clientRepository;
     @Autowired
-    AddressRepository addressRepository;
+    private AddressRepository addressRepository;
     @Autowired
-    OrderRepository orderRepository;
+    private OrderRepository orderRepository;
     @Autowired
-    OrderDetailsRepository orderDetailsRepository;
+    private OrderDetailsRepository orderDetailsRepository;
     @Autowired
-    ProductRepository productRepository;
+    private ProductRepository productRepository;
+    @Autowired
+    private InvoiceManager invoiceManager;
+
 
     public List<Client> getAll() {
         return clientRepository.findAll();
@@ -127,6 +132,7 @@ public class ClientService {
         orderUpdate.setTotalCost(orderUpdate.getTotalCost().add(addedCost));
         orderRepository.save(orderUpdate);
         orderDetailsRepository.save(orderDetails);
+        invoiceManager.manage(orderUpdate);
         return orderUpdate;
     }
 
@@ -155,6 +161,7 @@ public class ClientService {
         orderUpdate.setTotalCost(orderUpdate.getTotalCost().subtract(minusCost));
         orderRepository.save(orderUpdate);
         orderDetailsRepository.deleteById(idOrderDetails);
+        invoiceManager.manage(orderUpdate);
     }
 
 }
