@@ -56,4 +56,8 @@ public class Order {
     public void setOrderDetails(List<OrderDetails> orderDetails) {
         this.orderDetails = orderDetails;
     }
+
+    public void setClient(Client client) {
+        this.client = client;
+    }
 }
