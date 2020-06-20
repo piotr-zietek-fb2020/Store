@@ -26,4 +26,12 @@ public class InvoiceService {
         }
         return invoice;
     }
+
+    public Optional<Invoice> getInvoiceByOrderId(Long id) {
+        return invoiceRepository.findOneByOrderId(id);
+    }
+
+    public void delete(Invoice invoice) {
+        invoiceRepository.delete(invoice);
+    }
 }
