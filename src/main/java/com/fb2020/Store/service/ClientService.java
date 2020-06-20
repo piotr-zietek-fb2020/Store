@@ -1,13 +1,23 @@
 package com.fb2020.Store.service;
 
-import com.fb2020.Store.entity.Address;
-import com.fb2020.Store.entity.Client;
+import com.fb2020.Store.entity.*;
 import com.fb2020.Store.exception.client.ClientException;
 import com.fb2020.Store.exception.client.ClientNotFoundException;
-import com.fb2020.Store.repository.AddressRepository;
-import com.fb2020.Store.repository.ClientRepository;
+import com.fb2020.Store.exception.order.OrderException;
+import com.fb2020.Store.exception.order.OrderNotFoundException;
+import com.fb2020.Store.exception.order.OrderNotOwnedByClientException;
+import com.fb2020.Store.exception.orderDetails.OrderDetailsException;
+import com.fb2020.Store.exception.orderDetails.OrderDetailsNotFoundException;
+import com.fb2020.Store.exception.orderDetails.OrderDetailsNotOwnedByOrderException;
+import com.fb2020.Store.exception.product.ProductException;
+import com.fb2020.Store.exception.product.ProductNotFoundException;
+import com.fb2020.Store.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.sql.Date;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,6 +27,12 @@ public class ClientService {
     ClientRepository clientRepository;
     @Autowired
     AddressRepository addressRepository;
+    @Autowired
+    OrderRepository orderRepository;
+    @Autowired
+    OrderDetailsRepository orderDetailsRepository;
+    @Autowired
+    ProductRepository productRepository;
 
     public List<Client> getAll() {
         return clientRepository.findAll();
@@ -74,6 +90,62 @@ public class ClientService {
         addressRepository.save(address);
         client.setAddress(address);
         return clientRepository.save(client);
+    }
+
+    public Order createOrderForUser(Long id) throws ClientException {
+        Optional<Client> client = clientRepository.findById(id);
+        if(!client.isPresent()) {
+            throw new ClientNotFoundException(id);
+        }
+        Order order = new Order();
+        order.setClient(client.get());
+        order.setTotalCost(new BigDecimal(0));
+        order.setOrderDate(new Date(Calendar.getInstance().getTime().getTime()));
+        return orderRepository.save(order);
+    }
+
+    public Order addOrderDetailToOrderForClient(Long idClient, Long idOrder, OrderDetails orderDetails) throws ClientNotFoundException, OrderNotFoundException, OrderNotOwnedByClientException, ProductNotFoundException {
+        Optional<Client> client = clientRepository.findById(idClient);
+        if(!client.isPresent()) {
+            throw new ClientNotFoundException(idClient);
+        }
+        Optional<Order> order = orderRepository.findById(idOrder);
+        if(!order.isPresent()) {
+            throw new OrderNotFoundException(idOrder);
+        }
+        if(order.get().getClient().getId() != idClient) {
+            throw new OrderNotOwnedByClientException(idClient, idOrder);
+        }
+        Optional<Product> product = productRepository.findById(orderDetails.getProduct().getId());
+        if(!product.isPresent()) {
+            throw new ProductNotFoundException(orderDetails.getProduct().getId());
+        }
+        orderDetails.setId(null);
+        orderDetails.setOrder(order.get());
+        orderDetailsRepository.save(orderDetails);
+        return order.get();
+    }
+
+    public void deleteOrderDetailFromOrderForClient(Long idClient, Long idOrder, Long idOrderDetails) throws ClientNotFoundException, OrderNotFoundException, OrderNotOwnedByClientException, OrderDetailsNotFoundException, OrderDetailsNotOwnedByOrderException {
+        Optional<Client> client = clientRepository.findById(idClient);
+        if(!client.isPresent()) {
+            throw new ClientNotFoundException(idClient);
+        }
+        Optional<Order> order = orderRepository.findById(idOrder);
+        if(!order.isPresent()) {
+            throw new OrderNotFoundException(idOrder);
+        }
+        if(order.get().getClient().getId() != idClient) {
+            throw new OrderNotOwnedByClientException(idClient, idOrder);
+        }
+        Optional<OrderDetails> orderDetails = orderDetailsRepository.findById(idOrderDetails);
+        if(!orderDetails.isPresent()) {
+            throw new OrderDetailsNotFoundException(idOrderDetails);
+        }
+        if(orderDetails.get().getOrder().getId() != idOrder) {
+            throw new OrderDetailsNotOwnedByOrderException(idOrder, idOrderDetails);
+        }
+        orderDetailsRepository.deleteById(idOrderDetails);
     }
 
 }
