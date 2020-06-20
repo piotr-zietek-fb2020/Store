@@ -41,14 +41,14 @@ public class AddressController {
         return addressService.getAllByCountry(country);
     }
 
-    @PostMapping("/addresses")
+ /*   @PostMapping("/addresses")
     public ResponseEntity<Void> createAddress(@RequestBody Address address, UriComponentsBuilder builder) {
         address.setId(null);
         addressService.createAddress(address);
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(builder.path("/addresses/{id}").buildAndExpand(address.getId()).toUri());
         return new ResponseEntity<>(headers, HttpStatus.CREATED);
-    }
+    }*/
 
     @DeleteMapping("/addresses/{id}")
     public void deleteAddressById(@PathVariable("id") Long id) {
