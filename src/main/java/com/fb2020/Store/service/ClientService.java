@@ -120,10 +120,14 @@ public class ClientService {
         if(!product.isPresent()) {
             throw new ProductNotFoundException(orderDetails.getProduct().getId());
         }
+        Order orderUpdate = order.get();
         orderDetails.setId(null);
-        orderDetails.setOrder(order.get());
+        orderDetails.setOrder(orderUpdate);
+        BigDecimal addedCost = orderDetails.getProduct().getPrice().multiply(new BigDecimal(orderDetails.getQuantity()));
+        orderUpdate.setTotalCost(orderUpdate.getTotalCost().add(addedCost));
+        orderRepository.save(orderUpdate);
         orderDetailsRepository.save(orderDetails);
-        return order.get();
+        return orderUpdate;
     }
 
     public void deleteOrderDetailFromOrderForClient(Long idClient, Long idOrder, Long idOrderDetails) throws ClientNotFoundException, OrderNotFoundException, OrderNotOwnedByClientException, OrderDetailsNotFoundException, OrderDetailsNotOwnedByOrderException {
@@ -145,6 +149,11 @@ public class ClientService {
         if(orderDetails.get().getOrder().getId() != idOrder) {
             throw new OrderDetailsNotOwnedByOrderException(idOrder, idOrderDetails);
         }
+        Order orderUpdate = order.get();
+        OrderDetails orderDetailsDelete = orderDetails.get();
+        BigDecimal minusCost = orderDetailsDelete.getProduct().getPrice().multiply(new BigDecimal(orderDetailsDelete.getQuantity()));
+        orderUpdate.setTotalCost(orderUpdate.getTotalCost().subtract(minusCost));
+        orderRepository.save(orderUpdate);
         orderDetailsRepository.deleteById(idOrderDetails);
     }
 
