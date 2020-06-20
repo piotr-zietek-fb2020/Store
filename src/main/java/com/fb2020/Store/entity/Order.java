@@ -1,5 +1,7 @@
 package com.fb2020.Store.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 
@@ -17,6 +19,7 @@ public class Order {
     private Date orderDate;
     @Column(name = "total_cost")
     private BigDecimal totalCost;
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "client_id")
     private Client client;
@@ -59,5 +62,9 @@ public class Order {
 
     public void setClient(Client client) {
         this.client = client;
+    }
+
+    public Client getClient() {
+        return client;
     }
 }
