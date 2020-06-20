@@ -43,4 +43,8 @@ public class OrderDetails {
     public void setProduct(Product product) {
         this.product = product;
     }
+
+    public void setOrder(Order order) {
+        this.order = order;
+    }
 }
