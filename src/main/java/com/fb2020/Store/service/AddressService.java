@@ -40,6 +40,7 @@ public class AddressService {
         if(!address.isPresent()) {
             throw new AddressNotFoundException(id);
         }
+        address.get().getClient().setAddress(null);
         addressRepository.deleteById(id);
     }
 

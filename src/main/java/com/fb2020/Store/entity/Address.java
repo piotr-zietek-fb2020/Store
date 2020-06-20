@@ -1,5 +1,7 @@
 package com.fb2020.Store.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.*;
 
 @Entity
@@ -16,6 +18,7 @@ public class Address {
     private String zip_code;
     @Column(name = "country")
     private String country;
+    @JsonBackReference
     @OneToOne (mappedBy = "address")
     private Client client;
 
@@ -62,4 +65,11 @@ public class Address {
         this.country = country;
     }
 
+    public Client getClient() {
+        return client;
+    }
+
+    public void setClient(Client client) {
+        this.client = client;
+    }
 }
