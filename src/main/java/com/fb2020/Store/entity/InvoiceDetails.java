@@ -25,6 +25,13 @@ public class InvoiceDetails {
     public InvoiceDetails() {
     }
 
+    public InvoiceDetails(String product_name, int quantity, BigDecimal amount, Invoice invoice) {
+        this.product_name = product_name;
+        this.quantity = quantity;
+        this.amount = amount;
+        this.invoice = invoice;
+    }
+
     public Long getId() {
         return id;
     }
