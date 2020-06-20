@@ -1,6 +1,7 @@
 package com.fb2020.Store.entity;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 
 @Entity
 @Table(name = "product")
@@ -13,7 +14,7 @@ public class Product {
     @Column(name = "description")
     private String description;
     @Column(name = "price")
-    private double price;
+    private BigDecimal price;
 
     public Product() {
     }
@@ -42,11 +43,11 @@ public class Product {
         this.description = description;
     }
 
-    public double getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 }
