@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.sql.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "invoice")
@@ -24,6 +25,8 @@ public class Invoice {
     @OneToOne
     @JoinColumn(name = "order_id")
     private Order order;
+    @OneToMany(mappedBy = "invoice")
+    private List<InvoiceDetails>invoiceDetails;
 
     public Invoice() {
     }
@@ -66,5 +69,13 @@ public class Invoice {
 
     public void setOrder(Order order) {
         this.order = order;
+    }
+
+    public List<InvoiceDetails> getInvoiceDetails() {
+        return invoiceDetails;
+    }
+
+    public void setInvoiceDetails(List<InvoiceDetails> invoiceDetails) {
+        this.invoiceDetails = invoiceDetails;
     }
 }
