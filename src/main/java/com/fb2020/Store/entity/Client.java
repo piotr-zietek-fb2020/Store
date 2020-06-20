@@ -1,6 +1,7 @@
 package com.fb2020.Store.entity;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "client")
@@ -19,7 +20,8 @@ public class Client {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "address_id")
     private Address address;
-
+    @OneToMany(mappedBy = "client")
+    private List<Order> oders;
     public Client() {
     }
 
@@ -70,4 +72,5 @@ public class Client {
     public void setAddress(Address address) {
         this.address = address;
     }
+
 }
