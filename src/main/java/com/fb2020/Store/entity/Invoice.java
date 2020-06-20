@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.sql.Date;
+import java.util.Calendar;
 import java.util.List;
 
 @Entity
@@ -25,10 +26,17 @@ public class Invoice {
     @OneToOne
     @JoinColumn(name = "order_id")
     private Order order;
-    @OneToMany(mappedBy = "invoice")
+    @OneToMany(mappedBy = "invoice", cascade = CascadeType.ALL)
     private List<InvoiceDetails>invoiceDetails;
 
     public Invoice() {
+    }
+
+    public Invoice(Order order) {
+        this.order = order;
+        this.client = order.getClient();
+        this.total = order.getTotalCost();
+        this.issueDate = new Date(Calendar.getInstance().getTime().getTime());
     }
 
     public Long getId() {
