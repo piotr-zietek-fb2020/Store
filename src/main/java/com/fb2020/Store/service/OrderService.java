@@ -6,7 +6,6 @@ import com.fb2020.Store.exception.order.OrderNotFoundException;
 import com.fb2020.Store.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -35,4 +34,7 @@ public class OrderService {
         orderRepository.deleteById(id);
     }
 
+    public List<Order>getAllOrdersByClientId(Long id) {
+        return orderRepository.findAllByClientId(id);
+    }
 }
