@@ -23,8 +23,11 @@ public class Order {
     @ManyToOne
     @JoinColumn(name = "client_id")
     private Client client;
-    @OneToMany(mappedBy = "order")
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderDetails> orderDetails;
+    @JsonIgnore
+    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL)
+    private Invoice invoice;
 
     public Order() {
     }
